@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiR3ltIFJ1dGluYSIsInNob3J0X25hbWUiOiJHeW0iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjMGEwYTBhIiwidGhlbWVfY29sb3IiOiIjZmY0NDQ0In0=">
+    <title>💪 Rutina 5 Días - Tren Superior</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-card: #141414;
+            --accent: #ff4444;
+            --accent-glow: rgba(255, 68, 68, 0.3);
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --border: #2a2a2a;
+            --success: #00ff88;
+            --warning: #ffaa00;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255, 68, 68, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 68, 68, 0.03) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding-bottom: 100px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 68, 68, 0.05) 100%);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .progress-bar {
+            margin-top: 20px;
+            background: var(--border);
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .day-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .day-card.completed::before {
+            transform: scaleY(1);
+        }
+
+        .day-card.priority {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px rgba(255, 68, 68, 0.1);
+        }
+
+        .day-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .day-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            color: var(--accent);
+            line-height: 1;
+            min-width: 50px;
+        }
+
+        .day-title {
+            flex: 1;
+        }
+
+        .day-title h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .day-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .priority-badge {
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .exercise {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 0;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .exercise:hover {
+            transform: translateX(5px);
+        }
+
+        .checkbox-wrapper {
+            position: relative;
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .checkbox-custom {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--text-muted);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkbox-wrapper input[type="checkbox"]:checked ~ .checkbox-custom {
+            background: var(--accent);
+            border-color: var(--accent);
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .checkbox-custom::after {
+            content: '✓';
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .checkbox-wrapper input[type="checkbox"]:checked ~ .checkbox-custom::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .exercise-content {
+            flex: 1;
+        }
+
+        .exercise-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .exercise-sets {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .exercise.checked .exercise-name {
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .note {
+            background: rgba(255, 170, 0, 0.1);
+            border-left: 3px solid var(--warning);
+            padding: 12px 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--warning);
+            font-weight: 500;
+        }
+
+        .note.skip {
+            background: rgba(255, 68, 68, 0.1);
+            border-left-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, var(--bg-primary) 80%, transparent);
+            padding: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-reset {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-reset:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 68, 68, 0.2);
+        }
+
+        .btn-reset:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .day-number {
+                font-size: 2rem;
+            }
+
+            .day-title h2 {
+                font-size: 1.1rem;
+            }
+
+            .controls {
+                padding: 15px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 RUTINA 5 DÍAS</h1>
+            <div class="subtitle">Prioridad Tren Superior</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">0/30 ejercicios completados</div>
+        </div>
+
+        <!-- DÍA 1 -->
+        <div class="day-card priority" data-day="1">
+            <div class="day-header">
+                <div class="day-number">01</div>
+                <div class="day-title">
+                    <h2>Pecho superior + Hombro lateral + Tríceps</h2>
+                    <div class="day-subtitle"><span class="priority-badge">⚡ PRIORIDAD</span></div>
+                </div>
+            </div>
+            <div class="exercise" data-exercise="d1_1">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d1_1">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d1_1" class="exercise-content">
+                    <div class="exercise-name">Press inclinado con mancuernas</div>
+                    <div class="exercise-sets">4 x 6–8</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d1_2">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d1_2">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d1_2" class="exercise-content">
+                    <div class="exercise-name">Press convergente en máquina</div>
+                    <div class="exercise-sets">3 x 8–10</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d1_3">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d1_3">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d1_3" class="exercise-content">
+                    <div class="exercise-name">Elevaciones laterales en polea</div>
+                    <div class="exercise-sets">4 x 12–15</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d1_4">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d1_4">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d1_4" class="exercise-content">
+                    <div class="exercise-name">Elevaciones laterales sentado con mancuerna</div>
+                    <div class="exercise-sets">3 x 12–15</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d1_5">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d1_5">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d1_5" class="exercise-content">
+                    <div class="exercise-name">Extensión de tríceps en polea (barra o cuerda)</div>
+                    <div class="exercise-sets">3 x 10–12</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d1_6">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d1_6">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d1_6" class="exercise-content">
+                    <div class="exercise-name">Extensión por encima de la cabeza (cuerda o mancuerna)</div>
+                    <div class="exercise-sets">3 x 10–12</div>
+                </label>
+            </div>
+            <div class="note skip">👉 Este día NO se salta.</div>
+        </div>
+
+        <!-- DÍA 2 -->
+        <div class="day-card" data-day="2">
+            <div class="day-header">
+                <div class="day-number">02</div>
+                <div class="day-title">
+                    <h2>Espalda densidad + Bíceps</h2>
+                </div>
+            </div>
+            <div class="exercise" data-exercise="d2_1">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d2_1">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d2_1" class="exercise-content">
+                    <div class="exercise-name">Remo con barra o en máquina pecho apoyado</div>
+                    <div class="exercise-sets">4 x 6–8</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d2_2">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d2_2">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d2_2" class="exercise-content">
+                    <div class="exercise-name">Jalón al pecho agarre neutro</div>
+                    <div class="exercise-sets">3 x 8–10</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d2_3">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d2_3">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d2_3" class="exercise-content">
+                    <div class="exercise-name">Remo unilateral en polea</div>
+                    <div class="exercise-sets">3 x 10–12</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d2_4">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d2_4">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d2_4" class="exercise-content">
+                    <div class="exercise-name">Face pull</div>
+                    <div class="exercise-sets">3 x 12–15</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d2_5">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d2_5">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d2_5" class="exercise-content">
+                    <div class="exercise-name">Curl bíceps barra o mancuerna</div>
+                    <div class="exercise-sets">3 x 8–10</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d2_6">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d2_6">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d2_6" class="exercise-content">
+                    <div class="exercise-name">Curl inclinado</div>
+                    <div class="exercise-sets">3 x 10–12</div>
+                </label>
+            </div>
+        </div>
+
+        <!-- DÍA 3 -->
+        <div class="day-card" data-day="3">
+            <div class="day-header">
+                <div class="day-number">03</div>
+                <div class="day-title">
+                    <h2>Pierna completa</h2>
+                    <div class="day-subtitle">Día más "saltable"</div>
+                </div>
+            </div>
+            <div class="exercise" data-exercise="d3_1">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d3_1">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d3_1" class="exercise-content">
+                    <div class="exercise-name">Sentadilla o prensa</div>
+                    <div class="exercise-sets">4 x 6–8</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d3_2">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d3_2">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d3_2" class="exercise-content">
+                    <div class="exercise-name">Peso muerto rumano</div>
+                    <div class="exercise-sets">3 x 8–10</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d3_3">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d3_3">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d3_3" class="exercise-content">
+                    <div class="exercise-name">Extensiones de cuádriceps</div>
+                    <div class="exercise-sets">3 x 12–15</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d3_4">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d3_4">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d3_4" class="exercise-content">
+                    <div class="exercise-name">Curl femoral</div>
+                    <div class="exercise-sets">3 x 10–12</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d3_5">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d3_5">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d3_5" class="exercise-content">
+                    <div class="exercise-name">Gemelos</div>
+                    <div class="exercise-sets">4 x 12–15</div>
+                </label>
+            </div>
+            <div class="note">Este es el menos crítico para tu objetivo estético actual.</div>
+        </div>
+
+        <!-- DÍA 4 -->
+        <div class="day-card priority" data-day="4">
+            <div class="day-header">
+                <div class="day-number">04</div>
+                <div class="day-title">
+                    <h2>Hombro completo + Tríceps</h2>
+                    <div class="day-subtitle"><span class="priority-badge">💪 BRAZO ANCHO</span></div>
+                </div>
+            </div>
+            <div class="exercise" data-exercise="d4_1">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d4_1">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d4_1" class="exercise-content">
+                    <div class="exercise-name">Press militar con mancuernas</div>
+                    <div class="exercise-sets">3 x 6–8</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d4_2">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d4_2">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d4_2" class="exercise-content">
+                    <div class="exercise-name">Elevaciones laterales en polea (otra variante)</div>
+                    <div class="exercise-sets">4 x 12–15</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d4_3">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d4_3">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d4_3" class="exercise-content">
+                    <div class="exercise-name">Pájaros para deltoide posterior</div>
+                    <div class="exercise-sets">3 x 12–15</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d4_4">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d4_4">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d4_4" class="exercise-content">
+                    <div class="exercise-name">Fondos en paralelas (si no molestan)</div>
+                    <div class="exercise-sets">3 x 6–10</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d4_5">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d4_5">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d4_5" class="exercise-content">
+                    <div class="exercise-name">Extensión de tríceps pesada (barra recta)</div>
+                    <div class="exercise-sets">3 x 8–10</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d4_6">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d4_6">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d4_6" class="exercise-content">
+                    <div class="exercise-name">Patada o extensión unilateral controlada</div>
+                    <div class="exercise-sets">2–3 x 12–15</div>
+                </label>
+            </div>
+            <div class="note">👉 Acá construimos el brazo ancho.</div>
+        </div>
+
+        <!-- DÍA 5 -->
+        <div class="day-card" data-day="5">
+            <div class="day-header">
+                <div class="day-number">05</div>
+                <div class="day-title">
+                    <h2>Pecho + Espalda</h2>
+                    <div class="day-subtitle">Densidad global</div>
+                </div>
+            </div>
+            <div class="exercise" data-exercise="d5_1">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d5_1">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d5_1" class="exercise-content">
+                    <div class="exercise-name">Press plano con barra o mancuerna</div>
+                    <div class="exercise-sets">4 x 6–8</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d5_2">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d5_2">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d5_2" class="exercise-content">
+                    <div class="exercise-name">Remo pesado (barra o máquina)</div>
+                    <div class="exercise-sets">4 x 6–8</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d5_3">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d5_3">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d5_3" class="exercise-content">
+                    <div class="exercise-name">Cruces en polea</div>
+                    <div class="exercise-sets">3 x 12–15</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d5_4">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d5_4">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d5_4" class="exercise-content">
+                    <div class="exercise-name">Jalón amplio</div>
+                    <div class="exercise-sets">3 x 8–10</div>
+                </label>
+            </div>
+            <div class="exercise" data-exercise="d5_5">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="d5_5">
+                    <div class="checkbox-custom"></div>
+                </div>
+                <label for="d5_5" class="exercise-content">
+                    <div class="exercise-name">Elevaciones laterales altas reps</div>
+                    <div class="exercise-sets">2 x 15–20</div>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-reset" onclick="resetWeek()">🔄 Nueva Semana</button>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'workout_progress';
+        const TOTAL_EXERCISES = 30;
+
+        // Load saved progress
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const progress = JSON.parse(saved);
+                Object.keys(progress).forEach(id => {
+                    const checkbox = document.getElementById(id);
+                    if (checkbox) {
+                        checkbox.checked = progress[id];
+                        updateExerciseState(checkbox);
+                    }
+                });
+            }
+            updateProgress();
+        }
+
+        // Save progress
+        function saveProgress() {
+            const progress = {};
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                progress[checkbox.id] = checkbox.checked;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+            updateProgress();
+        }
+
+        // Update exercise visual state
+        function updateExerciseState(checkbox) {
+            const exercise = checkbox.closest('.exercise');
+            if (checkbox.checked) {
+                exercise.classList.add('checked');
+            } else {
+                exercise.classList.remove('checked');
+            }
+        }
+
+        // Update progress bar and day completion
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const checked = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            const percentage = (checked / TOTAL_EXERCISES) * 100;
+            
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = `${checked}/${TOTAL_EXERCISES} ejercicios completados`;
+
+            // Update day completion
+            document.querySelectorAll('.day-card').forEach(card => {
+                const dayCheckboxes = card.querySelectorAll('input[type="checkbox"]');
+                const dayChecked = card.querySelectorAll('input[type="checkbox"]:checked').length;
+                if (dayChecked === dayCheckboxes.length && dayCheckboxes.length > 0) {
+                    card.classList.add('completed');
+                } else {
+                    card.classList.remove('completed');
+                }
+            });
+        }
+
+        // Reset all checkboxes
+        function resetWeek() {
+            if (confirm('¿Seguro que querés empezar una nueva semana? Esto va a borrar todo el progreso actual.')) {
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                    updateExerciseState(checkbox);
+                });
+                localStorage.removeItem(STORAGE_KEY);
+                updateProgress();
+            }
+        }
+
+        // Add event listeners to all checkboxes
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                updateExerciseState(this);
+                saveProgress();
+            });
+        });
+
+        // Load progress on page load
+        loadProgress();
+    </script>
+</body>
+</html>
